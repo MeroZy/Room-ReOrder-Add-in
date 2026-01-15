@@ -14,6 +14,7 @@ namespace Room_Reorder.Helpers
             treeView.Nodes.Clear();
             treeView.BeginUpdate();
 
+            // Sort Levels by Elevation so the tree goes Level 1 -> Level 2
             List<Level> levels = new FilteredElementCollector(doc)
                 .OfClass(typeof(Level))
                 .Cast<Level>()
@@ -44,11 +45,11 @@ namespace Room_Reorder.Helpers
 
         private static void BuildLevelHierarchy(Document doc, TreeNode parentNode, List<SpatialElement> rooms)
         {
-            
-            Dictionary<ElementId, List<ElementId>> roomGraph = FlowSortMethod.GetRoomConnections(doc, rooms); // from flow sort method
+            Dictionary<ElementId, List<ElementId>> roomGraph = FlowSortMethod.GetRoomConnections(doc, rooms);
 
             HashSet<ElementId> visitedIds = new HashSet<ElementId>();
 
+            // Find the "Mother Room" (Root)
             SpatialElement rootRoom = rooms
                 .OrderByDescending(r => roomGraph.ContainsKey(r.Id) ? roomGraph[r.Id].Count : 0)
                 .FirstOrDefault();
@@ -57,14 +58,21 @@ namespace Room_Reorder.Helpers
 
             AddRoomNodeRecursive(rootRoom, parentNode, roomGraph, rooms, visitedIds);
 
-            // hundle Orphans
-            var orphans = rooms.Where(r => !visitedIds.Contains(r.Id)).ToList();
+            // Handle Orphans (Disconnected rooms)
+            // order them by Number so they appear as 101, 102, 103...
+            var orphans = rooms
+                .Where(r => !visitedIds.Contains(r.Id))
+                .OrderBy(r => r.Number)
+                .ToList();
+
             if (orphans.Count > 0)
             {
                 TreeNode orphanNode = new TreeNode("Disconnected / Others");
                 foreach (var orphan in orphans)
                 {
-                    orphanNode.Nodes.Add(new TreeNode($"{orphan.Number} - {orphan.Name}"));
+                    // CLEAN NAME
+                    string displayName = GetCleanDisplayName(orphan);
+                    orphanNode.Nodes.Add(new TreeNode(displayName));
                 }
                 parentNode.Nodes.Add(orphanNode);
             }
@@ -79,7 +87,10 @@ namespace Room_Reorder.Helpers
         {
             visitedIds.Add(currentRoom.Id);
 
-            TreeNode roomNode = new TreeNode($"{currentRoom.Number} - {currentRoom.Name}");
+            // Remove number from name
+            string displayName = GetCleanDisplayName(currentRoom);
+
+            TreeNode roomNode = new TreeNode(displayName);
             roomNode.Tag = currentRoom;
             parentTreeNode.Nodes.Add(roomNode);
 
@@ -87,18 +98,35 @@ namespace Room_Reorder.Helpers
             {
                 List<ElementId> neighborIds = graph[currentRoom.Id];
 
-                foreach (ElementId id in neighborIds)
+                // Instead of processing random IDs, we look up the rooms and SORT them first.
+                var sortedNeighbors = neighborIds
+                    .Select(id => allRooms.FirstOrDefault(r => r.Id == id))
+                    .Where(r => r != null && !visitedIds.Contains(r.Id))
+                    .OrderBy(r => r.Number) 
+                    .ToList();
+
+                foreach (SpatialElement neighbor in sortedNeighbors)
                 {
-                    if (!visitedIds.Contains(id))
-                    {
-                        SpatialElement neighbor = allRooms.FirstOrDefault(x => x.Id == id);
-                        if (neighbor != null)
-                        {
-                            AddRoomNodeRecursive(neighbor, roomNode, graph, allRooms, visitedIds);
-                        }
-                    }
+                    AddRoomNodeRecursive(neighbor, roomNode, graph, allRooms, visitedIds);
                 }
             }
+        }
+
+        private static string GetCleanDisplayName(SpatialElement room)
+        {
+            string number = room.Number;
+            string name = room.Name;
+
+            string cleanName = name.Replace(number, "").Trim();
+
+            // fix no name
+            if (string.IsNullOrWhiteSpace(cleanName) || cleanName == "-")
+            {
+                cleanName = "Room";
+            }
+
+            // "101 - Room"
+            return $"{number} - {cleanName}";
         }
 
         private static List<SpatialElement> GetRoomsOnLevel(Document doc, ElementId levelId)
@@ -110,6 +138,5 @@ namespace Room_Reorder.Helpers
                 .Where(x => x.LevelId == levelId && x.Location != null)
                 .ToList();
         }
-
     }
 }

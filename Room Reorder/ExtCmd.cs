@@ -30,8 +30,8 @@ namespace Room_Reorder
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
 
-            //ExtEventHan = new ExtEventHan();
-            //ExtEvent = ExternalEvent.Create(ExtEventHan);
+            ExtEventHan = new ExtEventHan();
+            ExtEvent = ExternalEvent.Create(ExtEventHan);
 
             //MAIN
             Mainform = new Room_ReOrder();
@@ -41,8 +41,8 @@ namespace Room_Reorder
             //RVTUtlis.Run();
             //TaskDialog.Show("Test",RVTUtlis.sb.ToString()); //for test
             //GetRoomData(doc);
-            RvtUtlis.PickPoint(uidoc);
-            RenumberingMethod.RenumberRooms(doc, "Level 1");
+            //RvtUtlis.PickPoint(uidoc);
+            //RenumberingMethod.RenumberRooms(doc, "Level 1");
 
             return Result.Succeeded;
         }

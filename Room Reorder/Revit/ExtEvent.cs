@@ -5,12 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Room_Reorder.Revit
 {
     public class ExtEventHan : IExternalEventHandler
     {
         public Request Request { get; set; }
+        public ElementId IdToSelect { get; set; }
         public void Execute(UIApplication app)
         {
             switch (Request)
@@ -33,19 +35,24 @@ namespace Room_Reorder.Revit
                     //RvtUtlis.SelectFloors(ExtCmd.uidoc);
                     break;
 
-                case Request.TreeRefresh:
-                    if (ExtCmd.doc != null)
+                case Request.SelectElement:
+                    if (IdToSelect != null)
                     {
                         try
                         {
-                            Room_Reorder.Helpers.RoomTreeHelper.PopulateTreeView(ExtCmd.doc, ExtCmd.Mainform.treeViewRooms);
+                            //select
+                            ExtCmd.uidoc.Selection.SetElementIds(new List<ElementId> { IdToSelect });
+
+                            //focus
+                            ExtCmd.uidoc.ShowElements(IdToSelect);
                         }
-                        catch (Exception ex)
-                        {
-                            TaskDialog.Show("Error", "Could not refresh tree: " + ex.Message);
-                        }
+                        catch { } 
                     }
                     break;
+                case Request.TreeViewer:
+                    Room_Reorder.Helpers.RoomTreeHelper.PopulateTreeView(ExtCmd.doc, ExtCmd.Mainform.treeViewRooms);
+                    break;
+
             }
             
         }
@@ -60,6 +67,8 @@ namespace Room_Reorder.Revit
         SelectPoint,
         ReNumbering,
         SelectLevel,
-        TreeRefresh
+        SelectElement,
+        TreeViewer
+
     }
 }

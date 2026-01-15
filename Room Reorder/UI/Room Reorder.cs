@@ -1,4 +1,6 @@
-﻿using Autodesk.Revit.UI;
+﻿
+using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 using ReaLTaiizor.Forms;
 using Room_Reorder.Revit;
 using System;
@@ -14,10 +16,12 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace Room_Reorder.UI
 {
-    public partial class Room_ReOrder : Form
+    public partial class Room_ReOrder : System.Windows.Forms.Form
     {
+
         public Room_ReOrder()
         {
             InitializeComponent();
@@ -109,7 +113,40 @@ namespace Room_Reorder.UI
 
         private void button1_Click(object sender, EventArgs e)
         {
-            ServerConnect();
+            //Room_Reorder.Helpers.RoomTreeHelper.PopulateTreeView(ExtCmd.doc, this.treeViewRooms);
+            ExtCmd.ExtEventHan.Request = Request.TreeViewer;
+            ExtCmd.ExtEvent.Raise();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+            if (treeViewRooms.SelectedNode == null || treeViewRooms.SelectedNode.Tag == null)
+            {
+                MessageBox.Show("Please select a room in the tree first.");
+                return;
+            }
+
+            ElementId targetId = null;
+
+
+            if (treeViewRooms.SelectedNode.Tag is SpatialElement room)
+            {
+                targetId = room.Id;
+            }
+            else if (treeViewRooms.SelectedNode.Tag is ElementId id)
+            {
+                targetId = id; 
+            }
+
+            if (targetId != null)
+            {
+                // Pass the ID to the handler
+                ExtCmd.ExtEventHan.IdToSelect = targetId;
+
+                ExtCmd.ExtEventHan.Request = Request.SelectElement;
+                ExtCmd.ExtEvent.Raise();
+            }
         }
     }
 }
