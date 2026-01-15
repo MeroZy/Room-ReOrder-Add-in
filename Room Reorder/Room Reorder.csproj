@@ -111,6 +111,7 @@
     <Compile Include="UI\Components\StatusCircle.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="UI\Helper\RoomTree.cs" />
     <EmbeddedResource Include="UI\Room Reorder.resx">
       <DependentUpon>Room Reorder.cs</DependentUpon>
     </EmbeddedResource>

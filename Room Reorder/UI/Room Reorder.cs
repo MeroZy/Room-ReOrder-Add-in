@@ -1,20 +1,22 @@
-﻿using ReaLTaiizor.Forms;
+﻿using Autodesk.Revit.UI;
+using ReaLTaiizor.Forms;
+using Room_Reorder.Revit;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Text.Json;
-using System.Diagnostics;
 
 namespace Room_Reorder.UI
 {
-    public partial class Room_ReOrder : LostForm
+    public partial class Room_ReOrder : Form
     {
         public Room_ReOrder()
         {
@@ -27,23 +29,35 @@ namespace Room_Reorder.UI
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    client.Timeout = TimeSpan.FromSeconds(5);
+                    client.DefaultRequestHeaders.Add("User-Agent", "RevitPlugin");
 
-                    string json = await client.GetStringAsync(url);
+                    // --- THE CACHE BUSTER FIX ---
+                    // We add a unique timestamp to the end of the URL.
+                    // Example: .../Room%20Reorder.json?t=63840921
+                    string cacheBuster = DateTime.Now.Ticks.ToString();
+                    string finalUrl = url.Contains("?")
+                        ? $"{url}&nocache={cacheBuster}"
+                        : $"{url}?nocache={cacheBuster}";
 
-                    return JsonSerializer.Deserialize<OnlineConfig>(json);
+                    string json = await client.GetStringAsync(finalUrl);
+
+                    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                    return JsonSerializer.Deserialize<OnlineConfig>(json, options);
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return null; // offline / invalid / unreachable
+                return null;
             }
         }
         private void Room_ReOrder_Load(object sender, EventArgs e)
         {
             ServerConnect();
+
+            //ExtCmd.ExtEventHan.Request = Request.TreeRefresh;
+            //ExtCmd.ExtEvent.Raise();
         }
-        string url = "https://gist.github.com/MeroZy/07e9b609484c2afd825e7367a486e84e#file-room-reorder-json";
+        string url = "https://gist.githubusercontent.com/MeroZy/07e9b609484c2afd825e7367a486e84e/raw/Room%2520Reorder.json";
         public string updatelink { get; set; }
 
         public class OnlineConfig
@@ -56,16 +70,30 @@ namespace Room_Reorder.UI
         {
             OnlineConfig config = await GetOnlineConfig(url);
 
-            if (config == null || !config.Online)
+            // Check if config is null OR if deserialization failed (Version is null)
+            if (config == null || string.IsNullOrEmpty(config.Version))
+            {
+                // Connection failed or JSON format is wrong
+                statusCircle.IsGreen = false;
+                return;
+            }
+
+            // Now check the Online status flag from the JSON
+            if (!config.Online)
             {
                 statusCircle.IsGreen = false;
                 return;
             }
 
+            // If we get here, we are Online and Valid
+            statusCircle.IsGreen = true;
+
+            // Check for Updates
+            // Compare trimmed strings to avoid whitespace issues
             if (config.Version != VLbl.Text)
             {
                 Updatelbl.Visible = true;
-                updatelink = (config.Update_Url);
+                updatelink = config.Update_Url;
             }
         }
 
@@ -77,6 +105,11 @@ namespace Room_Reorder.UI
         private void label2_Click(object sender, EventArgs e)
         {
             Process.Start("https://www.linkedin.com/in/amrkhaled2/");
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            ServerConnect();
         }
     }
 }

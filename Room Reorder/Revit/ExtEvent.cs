@@ -32,6 +32,20 @@ namespace Room_Reorder.Revit
                 case Request.ReNumbering:
                     //RvtUtlis.SelectFloors(ExtCmd.uidoc);
                     break;
+
+                case Request.TreeRefresh:
+                    if (ExtCmd.doc != null)
+                    {
+                        try
+                        {
+                            Room_Reorder.Helpers.RoomTreeHelper.PopulateTreeView(ExtCmd.doc, ExtCmd.Mainform.treeViewRooms);
+                        }
+                        catch (Exception ex)
+                        {
+                            TaskDialog.Show("Error", "Could not refresh tree: " + ex.Message);
+                        }
+                    }
+                    break;
             }
             
         }
@@ -45,6 +59,7 @@ namespace Room_Reorder.Revit
     {
         SelectPoint,
         ReNumbering,
-        SelectLevel
+        SelectLevel,
+        TreeRefresh
     }
 }

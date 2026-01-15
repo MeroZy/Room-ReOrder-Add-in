@@ -157,7 +157,7 @@ namespace Room_Reorder.Methods
         // =============================================================================================
         // HELPER: BUILD RELATIONSHIPS
         // =============================================================================================
-        private static Dictionary<ElementId, List<ElementId>> GetRoomConnections(Document doc, List<SpatialElement> roomsOnLevel)
+        public static Dictionary<ElementId, List<ElementId>> GetRoomConnections(Document doc, List<SpatialElement> roomsOnLevel)
         {
             Dictionary<ElementId, List<ElementId>> graph = new Dictionary<ElementId, List<ElementId>>();
             HashSet<ElementId> levelRoomIds = new HashSet<ElementId>(roomsOnLevel.Select(r => r.Id));
