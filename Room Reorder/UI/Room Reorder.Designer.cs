@@ -31,9 +31,9 @@ namespace Room_Reorder.UI
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Node1");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Node0", new System.Windows.Forms.TreeNode[] {
-            treeNode3});
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Node1");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Node0", new System.Windows.Forms.TreeNode[] {
+            treeNode1});
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.label1 = new System.Windows.Forms.Label();
             this.separator1 = new ReaLTaiizor.Controls.Separator();
@@ -48,12 +48,12 @@ namespace Room_Reorder.UI
             // 
             this.treeView1.Location = new System.Drawing.Point(69, 80);
             this.treeView1.Name = "treeView1";
-            treeNode3.Name = "Node1";
-            treeNode3.Text = "Node1";
-            treeNode4.Name = "Node0";
-            treeNode4.Text = "Node0";
+            treeNode1.Name = "Node1";
+            treeNode1.Text = "Node1";
+            treeNode2.Name = "Node0";
+            treeNode2.Text = "Node0";
             this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode4});
+            treeNode2});
             this.treeView1.Size = new System.Drawing.Size(121, 97);
             this.treeView1.TabIndex = 0;
             // 
@@ -87,6 +87,7 @@ namespace Room_Reorder.UI
             this.label2.Size = new System.Drawing.Size(83, 13);
             this.label2.TabIndex = 1;
             this.label2.Text = "Dev. Amr Khaled";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // label3
             // 
@@ -145,7 +146,7 @@ namespace Room_Reorder.UI
             this.Controls.Add(this.VLbl);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.treeView1);
-            this.HeaderColor = System.Drawing.SystemColors.MenuHighlight;
+            this.HeaderColor = System.Drawing.Color.DodgerBlue;
             this.Image = global::Room_Reorder.Properties.Resources.icons8_room_80;
             this.Name = "Room_ReOrder";
             this.Text = "Room ReOrder";

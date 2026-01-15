@@ -73,5 +73,10 @@ namespace Room_Reorder.UI
         {
             Process.Start(updatelink);
         }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://www.linkedin.com/in/amrkhaled2/");
+        }
     }
 }
