@@ -27,6 +27,10 @@ namespace Room_Reorder.UI
             this.DoubleBuffered = true;
         }
 
+        /// <summary>
+        /// paint the circle
+        /// </summary>
+        /// <param name="e">The paint event arguments.</param>
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);

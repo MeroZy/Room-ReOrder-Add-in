@@ -11,6 +11,10 @@ namespace Room_Reorder.Methods
 {
     public static class RenumberingMethod
     {
+        /// <summary>
+        /// get room data for testing purpose
+        /// </summary>
+        /// <param name="doc"></param>
         public static void GetRoomData(Document doc) //for testing
         {
             FilteredElementCollector collector = new FilteredElementCollector(doc);
@@ -32,6 +36,12 @@ namespace Room_Reorder.Methods
             }
             MessageBox.Show(sb.ToString());
         }
+
+        /// <summary>
+        /// Renumber the rooms in the document.
+        /// </summary>
+        /// <param name="doc">The Revit document.</param>
+        /// <param name="groundLevelName">The name of the ground level.</param>
         public static void RenumberRooms(Document doc, string groundLevelName)
         {
             bool defaultXY = false;
@@ -168,7 +178,11 @@ namespace Room_Reorder.Methods
                 }
         }
 
-
+        /// <summary>
+        /// sort rooms by X then by Y
+        /// </summary>
+        /// <param name="rooms"></param>
+        /// <returns>list of rooms sorted by X and Y coordinates</returns>
         private static List<SpatialElement> SortRoomsByXY(List<SpatialElement> rooms)
         {
             return rooms
@@ -177,6 +191,12 @@ namespace Room_Reorder.Methods
                 .ToList();
         }
 
+        /// <summary>
+        /// set room number with conflict handling
+        /// </summary>
+        /// <param name="doc">The Revit document.</param>
+        /// <param name="room">The room element.</param>
+        /// <param name="number">The new room number.</param>
         private static void SetRoomNumber(Document doc, SpatialElement room, string number)
         {
             try

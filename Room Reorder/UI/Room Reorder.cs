@@ -23,8 +23,8 @@ namespace Room_Reorder.UI
 {
     public partial class Room_ReOrder : System.Windows.Forms.Form
     {
+        // ========== Properties ==========
         public string Message { get; set; }
-        bool isGreen = true; // true = green, false = red
         private bool _isUpdatingSearch = false;
         private bool _targetRoomQueued = false;
         private bool _suppressSearchTextChanged = false;
@@ -38,20 +38,28 @@ namespace Room_Reorder.UI
             RefreshViewer();
             ServerConnect();
             ToolTipInfo();
-
-
         }
 
-        //online server connection
+        // ========== online server connection ==========
+
         string url = "https://gist.githubusercontent.com/MeroZy/07e9b609484c2afd825e7367a486e84e/raw/Room%20Reorder.json";
         public string updatelink { get; set; }
 
+        /// <summary>
+        /// Represents the online configuration settings.
+        /// </summary>
         public class OnlineConfig
         {
             public string Version { get; set; }
             public bool Online { get; set; }
             public string Update_Url { get; set; }
         }
+
+        /// <summary>
+        /// Fetches the online configuration from the specified URL.
+        /// </summary>
+        /// <param name="url">The URL to fetch the configuration from.</param>
+        /// <returns>A task representing the asynchronous operation, with the online configuration as the result.</returns>
         public static async Task<OnlineConfig> GetOnlineConfig(string url)
         {
             try
@@ -76,6 +84,10 @@ namespace Room_Reorder.UI
                 return null;
             }
         }
+
+        /// <summary>
+        /// Connects to the online server and checks its status.
+        /// </summary>
         private async void ServerConnect()
         {
             //label4.Text = "Checking server...";
@@ -113,7 +125,10 @@ namespace Room_Reorder.UI
             }
         }
 
-        // Functions 
+        // ========== Functions ===========
+        /// <summary>
+        /// Restores the full room tree from the cached nodes.
+        /// </summary>
         private void RestoreFullTree()
         {
             if (RoomTreeHelper._allNodes == null)
@@ -134,6 +149,10 @@ namespace Room_Reorder.UI
 
             treeViewRooms.EndUpdate();
         }
+
+        /// <summary>
+        /// Runs the search operation in a deferred manner to avoid UI blocking.
+        /// </summary>
         private void RunSearchDeferred()
         {
             if (_isUpdatingSearch)
@@ -145,6 +164,10 @@ namespace Room_Reorder.UI
 
             PerformSearch();
         }
+
+        /// <summary>
+        /// performs the search operation and updates the room tree view.
+        /// </summary>
         private void PerformSearch()
         {
             if (RoomTreeHelper._allNodes == null)
@@ -182,6 +205,10 @@ namespace Room_Reorder.UI
                 _isUpdatingSearch = false;
             }
         }
+
+        /// <summary>
+        /// targets the selected room in the Revit model.
+        /// </summary>
         private void TargetRoom()
         {
             if (_isUpdatingSearch)
@@ -218,21 +245,37 @@ namespace Room_Reorder.UI
                 ExtCmd.ExtEvent.Raise();
             }
         }
+
+        /// <summary>
+        /// refreshes the room tree viewer.
+        /// </summary>
         public void RefreshViewer()
         {
             ExtCmd.ExtEventHan.Request = Request.TreeViewer;
             ExtCmd.ExtEvent.Raise();
         }
+
+        /// <summary>
+        /// renumbers the rooms based on the selected starting point and ground level.
+        /// </summary>
         private void Renumbering()
         {
             ExtCmd.ExtEventHan.Request = Request.ReNumbering;
             ExtCmd.ExtEvent.Raise();
         }
+
+        /// <summary>
+        /// selects the starting point in the Revit model.
+        /// </summary>
         private void SelectStartingPointXYZ()
         {
             ExtCmd.ExtEventHan.Request = Request.SelectPoint;
             ExtCmd.ExtEvent.Raise();
         }
+
+        /// <summary>
+        /// tooltip information for UI elements.
+        /// </summary>
         private void ToolTipInfo()
         {
             toolTip1.SetToolTip(pictureBox1, "Target Selected Room");
@@ -241,6 +284,13 @@ namespace Room_Reorder.UI
             toolTip1.SetToolTip(StartReOrderingbtn, "Start Renumbering");
             toolTip1.SetToolTip(LevelList, "Select Ground Level");
         }
+
+        /// <summary>
+        /// filters a tree node and its children based on the search text.
+        /// </summary>
+        /// <param name="sourceNode"></param>
+        /// <param name="searchText"></param>
+        /// <returns></returns>
         private TreeNode FilterNode(TreeNode sourceNode, string searchText)
         {
             bool isMatch = sourceNode.Text
@@ -268,7 +318,7 @@ namespace Room_Reorder.UI
             return null;
         }
 
-        // Events
+        // ========== Events ==========
         private void Updatelbl_Click(object sender, EventArgs e)
         {
             Process.Start(updatelink);

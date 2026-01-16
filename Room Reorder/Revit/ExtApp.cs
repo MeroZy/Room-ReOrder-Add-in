@@ -23,7 +23,17 @@ namespace Room_Reorder.Revit
 
         public Result OnStartup(UIControlledApplication uicApp)
         {
-            string tabName = "KAITECH-BD-R09";
+            return RunApp(uicApp);
+        }
+
+        /// <summary>
+        /// run the application to create ribbon tab, panel and button
+        /// </summary>
+        /// <param name="uicApp"></param>
+        /// <returns></returns>
+        public static Result RunApp(UIControlledApplication uicApp)
+        {
+            string tabName = "KAITECH-BD-R09"; //EasyRVT
             string panelName = "Architecture";
 
             try
@@ -42,16 +52,16 @@ namespace Room_Reorder.Revit
 
             Assembly assembly = Assembly.GetExecutingAssembly();
             PushButtonData pb_Data = new PushButtonData(
-                "Aanalysis",
-                "Slope Analysis",
+                "Rooms ReOrder",
+                "Rooms ReOrder",
                 assembly.Location,
-                "Room_Reorder.ExtCmd"
+                "Room_Reorder.ExtCmd" //extcmd full name 
             );
 
             PushButton pb = panel.AddItem(pb_Data) as PushButton;
-            pb.ToolTip = "This is Slope Analysis Add-in Developed By Amr Khaled";
+            pb.ToolTip = "This is Room ReOrder Add-in Developed By Amr Khaled";
 
-            Bitmap originalBitmap = Properties.Resources.icons8_room_80;
+            Bitmap originalBitmap = Properties.Resources.logoRenumbersq__1_;
 
             Bitmap resizedLarge = new Bitmap(originalBitmap, new Size(32, 32));
             pb.LargeImage = GetImageSource(resizedLarge);
@@ -61,7 +71,13 @@ namespace Room_Reorder.Revit
 
             return Result.Succeeded;
         }
-        public ImageSource GetImageSource(System.Drawing.Bitmap bitmap) //gpt help
+
+        /// <summary>
+        /// convert System.Drawing.Bitmap to ImageSource for Revit button icons
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <returns></returns>
+        public static ImageSource GetImageSource(System.Drawing.Bitmap bitmap) //gpt help
         {
             using (MemoryStream ms = new MemoryStream())
             {

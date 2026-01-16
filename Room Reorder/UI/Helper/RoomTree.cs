@@ -11,6 +11,11 @@ namespace Room_Reorder.Helpers
     {
         public static List<TreeNode> _allNodes { get; set; }
 
+        /// <summary>
+        /// populate the TreeView with Levels and Rooms hierarchy
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <param name="treeView"></param>
         public static void PopulateTreeView(Document doc, TreeView treeView)
         {
             treeView.Nodes.Clear();
@@ -46,6 +51,12 @@ namespace Room_Reorder.Helpers
 
         }
 
+        /// <summary>
+        /// build the hierarchy of rooms on a level based on connections
+        /// </summary>
+        /// <param name="doc">The Revit document.</param>
+        /// <param name="parentNode">The parent TreeNode to which the rooms will be added.</param>
+        /// <param name="rooms">The list of rooms on the level.</param>
         private static void BuildLevelHierarchy(Document doc, TreeNode parentNode, List<SpatialElement> rooms)
         {
             Dictionary<ElementId, List<ElementId>> roomGraph = FlowSortMethod.GetRoomConnections(doc, rooms);
@@ -89,6 +100,14 @@ namespace Room_Reorder.Helpers
             }
         }
 
+        /// <summary>
+        /// add room node and its connected rooms recursively
+        /// </summary>
+        /// <param name="currentRoom">The current room being processed.</param>
+        /// <param name="parentTreeNode">The parent TreeNode to which the current room will be added.</param>
+        /// <param name="graph">The graph representing room connections.</param>
+        /// <param name="allRooms">All rooms in the document.</param>
+        /// <param name="visitedIds">A set of visited room IDs to avoid processing the same room multiple times.</param>
         private static void AddRoomNodeRecursive(
             SpatialElement currentRoom,
             TreeNode parentTreeNode,
@@ -123,6 +142,11 @@ namespace Room_Reorder.Helpers
             }
         }
 
+        /// <summary>
+        /// get clean display name for room without redundant number
+        /// </summary>
+        /// <param name="room">The room element.</param>
+        /// <returns></returns>
         private static string GetCleanDisplayName(SpatialElement room)
         {
             string number = room.Number;
@@ -140,6 +164,12 @@ namespace Room_Reorder.Helpers
             return $"{number} - {cleanName}";
         }
 
+        /// <summary>
+        /// get all rooms on a specific level 
+        /// </summary>
+        /// <param name="doc">The Revit document.</param>
+        /// <param name="levelId">The level ID.</param>
+        /// <returns>A list of rooms on the specified level.</returns>
         private static List<SpatialElement> GetRoomsOnLevel(Document doc, ElementId levelId)
         {
             return new FilteredElementCollector(doc)
@@ -150,8 +180,9 @@ namespace Room_Reorder.Helpers
                 .ToList();
         }
 
-
-        // Caching Full Tree for Search Functionality
+        /// <summary>
+        /// cache the full tree structure
+        /// </summary>
         public static void CacheFullTree()
         {
             _allNodes = new List<TreeNode>();
@@ -160,6 +191,11 @@ namespace Room_Reorder.Helpers
                 _allNodes.Add(CloneNode(node));
         }
 
+        /// <summary>
+        /// clone a TreeNode and its children recursively
+        /// </summary>
+        /// <param name="node">The TreeNode to clone.</param>
+        /// <returns>A cloned TreeNode.</returns>
         public static TreeNode CloneNode(TreeNode node)
         {
             TreeNode newNode = new TreeNode(node.Text)

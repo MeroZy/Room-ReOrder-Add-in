@@ -10,6 +10,13 @@ namespace Room_Reorder.Methods
 {
     public static class FlowSortMethod
     {
+        /// <summary>
+        /// Sorts the rooms on a specific level based on their flow characteristics.
+        /// </summary>
+        /// <param name="doc">The Revit document.</param>
+        /// <param name="roomsOnLevel">The list of rooms on the specific level.</param>
+        /// <param name="startPoint">The starting point for the flow analysis.</param>
+        /// <returns>A sorted list of rooms based on their flow characteristics.</returns>
         public static List<SpatialElement> SortRoomsByFlow(Document doc, List<SpatialElement> roomsOnLevel, XYZ startPoint)
         {
             // =========================================================================================
@@ -82,7 +89,7 @@ namespace Room_Reorder.Methods
                 }
             }
 
-            if (startRoom == null) return validRooms;
+            if (startRoom == null) return validRooms; // Safety fallback if something went wrong
 
             // =========================================================================================
             // 3. DEPTH-FIRST SEARCH (DFS) TRAVERSAL
@@ -153,10 +160,16 @@ namespace Room_Reorder.Methods
 
             return sortedList;
         }
-
+        ///
         // =============================================================================================
         // HELPER: BUILD RELATIONSHIPS
         // =============================================================================================
+        /// <summary>
+        /// Builds a graph of room connections based on door locations.
+        /// </summary>
+        /// <param name="doc">The Revit document.</param>
+        /// <param name="roomsOnLevel">The list of rooms on the specific level.</param>
+        /// <returns>A dictionary representing room connections with their ids.</returns>
         public static Dictionary<ElementId, List<ElementId>> GetRoomConnections(Document doc, List<SpatialElement> roomsOnLevel)
         {
             Dictionary<ElementId, List<ElementId>> graph = new Dictionary<ElementId, List<ElementId>>();
@@ -198,6 +211,12 @@ namespace Room_Reorder.Methods
             return graph;
         }
 
+        /// <summary>
+        /// Adds a connection between two room IDs in the graph.
+        /// </summary>
+        /// <param name="graph">The graph representing room connections.</param>
+        /// <param name="id1">The ID of the first room.</param>
+        /// <param name="id2">The ID of the second room.</param>
         private static void AddConnection(Dictionary<ElementId, List<ElementId>> graph, ElementId id1, ElementId id2)
         {
             if (!graph.ContainsKey(id1)) graph[id1] = new List<ElementId>();

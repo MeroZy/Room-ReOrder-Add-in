@@ -27,6 +27,11 @@ namespace Room_Reorder
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            return Run(commandData);
+        }
+
+        public static Result Run(ExternalCommandData commandData)
+        {
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
 
@@ -48,8 +53,6 @@ namespace Room_Reorder
 
             return Result.Succeeded;
         }
-
-
         
     }
 }

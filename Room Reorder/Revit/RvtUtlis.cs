@@ -17,6 +17,10 @@ namespace Room_Reorder.Revit
 {
     static class RvtUtlis
     {
+        /// <summary>
+        /// pick a point in the Revit Model
+        /// </summary>
+        /// <param name="uidoc">The active UIDocument.</param>
         public static void PickPoint(UIDocument uidoc)
         {
 
@@ -30,6 +34,12 @@ namespace Room_Reorder.Revit
                 return;
             }
         }
+
+        /// <summary>
+        /// get all level names in the document
+        /// </summary>
+        /// <param name="doc">The Revit document.</param>
+        /// <returns>A list of level names.</returns>
         public static List<string> GetLevelsNames(Document doc)
         {
             List<string> levelNames = new FilteredElementCollector(doc)

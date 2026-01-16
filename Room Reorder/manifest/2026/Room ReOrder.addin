@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<RevitAddIns>
+	<AddIn Type="Application">
+		<Name>Room ReOrder Add-in</Name>
+		<Assembly>C:\Program Files\MeroZy\Revit Add-ins\Room ReOrder Add-in\Room Reorder Core.dll</Assembly>
+		<AddInId>5C1566E4-E1B1-40D6-B29F-99F0B9B1F91D</AddInId>
+		<Vendor>Amr Khaled</Vendor>
+		<VendorId>AmrKhaled</VendorId>
+		<Description>My custom Revit add-in for Room ReOrder</Description>
+		<FullClassName>Room_Reorder.Revit.ExtApp</FullClassName>
+	</AddIn>
+</RevitAddIns>

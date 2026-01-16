@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Nice3point.Revit.Build.Tasks.3.0.1\build\Nice3point.Revit.Build.Tasks.props" Condition="Exists('..\packages\Nice3point.Revit.Build.Tasks.3.0.1\build\Nice3point.Revit.Build.Tasks.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -8,12 +9,13 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Room_Reorder</RootNamespace>
     <AssemblyName>Room Reorder</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -37,6 +39,24 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=10.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.10.0.2\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -47,7 +67,7 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="ReaLTaiizor, Version=3.8.1.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ReaLTaiizor.3.8.1.4\lib\net48\ReaLTaiizor.dll</HintPath>
+      <HintPath>..\packages\ReaLTaiizor.3.8.1.4\lib\net481\ReaLTaiizor.dll</HintPath>
     </Reference>
     <Reference Include="RevitAPI">
       <HintPath>C:\Program Files\Autodesk\Revit 2024\RevitAPI.dll</HintPath>
@@ -128,11 +148,13 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="manifest\2020\Slope Analysis.addin" />
-    <None Include="manifest\2021\Slope Analysis.addin" />
-    <None Include="manifest\2022\Slope Analysis.addin" />
-    <None Include="manifest\2023\Slope Analysis.addin" />
-    <None Include="manifest\2024\Slope Analysis.addin" />
+    <None Include="manifest\2020\Room ReOrder.addin" />
+    <None Include="manifest\2021\Room ReOrder.addin" />
+    <None Include="manifest\2022\Room ReOrder.addin" />
+    <None Include="manifest\2023\Room ReOrder.addin" />
+    <None Include="manifest\2024\Room ReOrder.addin" />
+    <None Include="manifest\2025\Room ReOrder.addin" />
+    <None Include="manifest\2026\Room ReOrder.addin" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -159,6 +181,12 @@
   <ItemGroup>
     <None Include="Resources\Gemini_Generated_Image_b1rf73b1rf73b1rf %281%29.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Gemini_Generated_Image_n70cejn70cejn70c.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logoRenumbersq %281%29.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets" Condition="Exists('..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -166,5 +194,8 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets'))" />
+    <Error Condition="!Exists('..\packages\Nice3point.Revit.Build.Tasks.3.0.1\build\Nice3point.Revit.Build.Tasks.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Nice3point.Revit.Build.Tasks.3.0.1\build\Nice3point.Revit.Build.Tasks.props'))" />
+    <Error Condition="!Exists('..\packages\Nice3point.Revit.Build.Tasks.3.0.1\build\Nice3point.Revit.Build.Tasks.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Nice3point.Revit.Build.Tasks.3.0.1\build\Nice3point.Revit.Build.Tasks.targets'))" />
   </Target>
+  <Import Project="..\packages\Nice3point.Revit.Build.Tasks.3.0.1\build\Nice3point.Revit.Build.Tasks.targets" Condition="Exists('..\packages\Nice3point.Revit.Build.Tasks.3.0.1\build\Nice3point.Revit.Build.Tasks.targets')" />
 </Project>

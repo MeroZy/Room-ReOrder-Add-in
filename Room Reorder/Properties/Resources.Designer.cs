@@ -73,9 +73,29 @@ namespace Room_Reorder.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Gemini_Generated_Image_n70cejn70cejn70c {
+            get {
+                object obj = ResourceManager.GetObject("Gemini_Generated_Image_n70cejn70cejn70c", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap icons8_room_80 {
             get {
                 object obj = ResourceManager.GetObject("icons8_room_80", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap logoRenumbersq__1_ {
+            get {
+                object obj = ResourceManager.GetObject("logoRenumbersq__1_", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

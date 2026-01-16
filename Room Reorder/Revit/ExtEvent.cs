@@ -71,7 +71,7 @@ namespace Room_Reorder.Revit
 
         public string GetName()
         {
-            return "Slope Analysis";
+            return "Room Reorder";
         }
     }
     public enum Request
