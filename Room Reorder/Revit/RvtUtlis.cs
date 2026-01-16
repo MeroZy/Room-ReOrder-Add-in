@@ -22,13 +22,22 @@ namespace Room_Reorder.Revit
 
             try
             {
-                RvtData.userStartPoint = uidoc.Selection.PickPoint("Select the starting point for room reordering (Place it on the lobby or near the Entrance)");
+                RvtData.StartingPoint = uidoc.Selection.PickPoint("Select the starting point for room reordering (Place it on the lobby or near the Entrance)");
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
             {
                 TaskDialog.Show("Canceled", "No Point Selected, Operation canceld by User");
                 return;
             }
+        }
+        public static List<string> GetLevelsNames(Document doc)
+        {
+            List<string> levelNames = new FilteredElementCollector(doc)
+                                      .OfClass(typeof(Level))
+                                      .Cast<Level>()
+                                      .Select(lvl => lvl.Name)
+                                      .ToList();
+            return levelNames;
         }
     }
 }

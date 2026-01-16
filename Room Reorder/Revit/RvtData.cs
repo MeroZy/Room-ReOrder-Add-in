@@ -12,8 +12,8 @@ namespace Room_Reorder.Revit
         //double start_range = double.Parse(Mainform.tb_start_range.Text);
         //double end_range = double.Parse(Mainform.tb_end_range.Text);
 
-        public static string groundLevelName { get; set; }
-        public static XYZ userStartPoint { get; set; }
+        public static string GroundLevelName { get; set; }
+        public static XYZ StartingPoint { get; set; }
 
     }
 }

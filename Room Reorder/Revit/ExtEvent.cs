@@ -1,11 +1,13 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using Room_Reorder.Methods;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Room_Reorder.Revit
 {
@@ -19,6 +21,9 @@ namespace Room_Reorder.Revit
             {
                 case Request.SelectPoint:
                     //RvtUtlis.Analysis(ExtCmd.doc, ExtCmd.uidoc, RvtData.start_range, RvtData.end_range);
+                    RvtUtlis.PickPoint(ExtCmd.uidoc);
+                    ExtCmd.Mainform.StartingPointXYZ.Text = $"{RvtData.StartingPoint.X}, {RvtData.StartingPoint.Y}";
+                    ExtCmd.Mainform.Focus();
                     break;
 
 
@@ -32,7 +37,9 @@ namespace Room_Reorder.Revit
                     break;
 
                 case Request.ReNumbering:
-                    //RvtUtlis.SelectFloors(ExtCmd.uidoc);
+                    RenumberingMethod.RenumberRooms(ExtCmd.doc, RvtData.GroundLevelName);
+                    ExtCmd.Mainform. RefreshViewer();
+                    ExtCmd.Mainform.Focus();
                     break;
 
                 case Request.SelectElement:
@@ -51,6 +58,11 @@ namespace Room_Reorder.Revit
                     break;
                 case Request.TreeViewer:
                     Room_Reorder.Helpers.RoomTreeHelper.PopulateTreeView(ExtCmd.doc, ExtCmd.Mainform.treeViewRooms);
+                    if (ExtCmd.Mainform.treeViewRooms.Nodes.Count > 0)
+                    {
+                        ExtCmd.Mainform.treeViewRooms.TopNode = ExtCmd.Mainform.treeViewRooms.Nodes[0];
+                    }
+                    Room_Reorder.Helpers.RoomTreeHelper.CacheFullTree();
                     break;
 
             }

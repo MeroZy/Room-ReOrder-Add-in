@@ -9,6 +9,8 @@ namespace Room_Reorder.Helpers
 {
     public static class RoomTreeHelper
     {
+        public static List<TreeNode> _allNodes { get; set; }
+
         public static void PopulateTreeView(Document doc, TreeView treeView)
         {
             treeView.Nodes.Clear();
@@ -41,6 +43,7 @@ namespace Room_Reorder.Helpers
 
             treeView.EndUpdate();
             treeView.ExpandAll();
+
         }
 
         private static void BuildLevelHierarchy(Document doc, TreeNode parentNode, List<SpatialElement> rooms)
@@ -59,7 +62,6 @@ namespace Room_Reorder.Helpers
             AddRoomNodeRecursive(rootRoom, parentNode, roomGraph, rooms, visitedIds);
 
             // Handle Orphans (Disconnected rooms)
-            // order them by Number so they appear as 101, 102, 103...
             var orphans = rooms
                 .Where(r => !visitedIds.Contains(r.Id))
                 .OrderBy(r => r.Number)
@@ -68,12 +70,21 @@ namespace Room_Reorder.Helpers
             if (orphans.Count > 0)
             {
                 TreeNode orphanNode = new TreeNode("Disconnected / Others");
+
                 foreach (var orphan in orphans)
                 {
-                    // CLEAN NAME
                     string displayName = GetCleanDisplayName(orphan);
-                    orphanNode.Nodes.Add(new TreeNode(displayName));
+
+                    //Create the Node variable first
+                    TreeNode childNode = new TreeNode(displayName);
+
+                    // Set the Tag 
+                    childNode.Tag = orphan;
+
+                    // Add it to the parent
+                    orphanNode.Nodes.Add(childNode);
                 }
+
                 parentNode.Nodes.Add(orphanNode);
             }
         }
@@ -137,6 +148,29 @@ namespace Room_Reorder.Helpers
                 .Cast<SpatialElement>()
                 .Where(x => x.LevelId == levelId && x.Location != null)
                 .ToList();
+        }
+
+
+        // Caching Full Tree for Search Functionality
+        public static void CacheFullTree()
+        {
+            _allNodes = new List<TreeNode>();
+
+            foreach (TreeNode node in ExtCmd.Mainform.treeViewRooms.Nodes)
+                _allNodes.Add(CloneNode(node));
+        }
+
+        public static TreeNode CloneNode(TreeNode node)
+        {
+            TreeNode newNode = new TreeNode(node.Text)
+            {
+                Tag = node.Tag
+            };
+
+            foreach (TreeNode child in node.Nodes)
+                newNode.Nodes.Add(CloneNode(child));
+
+            return newNode;
         }
     }
 }

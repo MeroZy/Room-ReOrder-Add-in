@@ -37,12 +37,14 @@ namespace Room_Reorder
             Mainform = new Room_ReOrder();
             Mainform.Show();
 
+            RvtData.StartingPoint = new XYZ(0, 0, 0);
 
             //RVTUtlis.Run();
             //TaskDialog.Show("Test",RVTUtlis.sb.ToString()); //for test
             //GetRoomData(doc);
-            //RvtUtlis.PickPoint(uidoc);
-            //RenumberingMethod.RenumberRooms(doc, "Level 1");
+
+            //rvtutlis.pickpoint(uidoc);
+            //renumberingmethod.renumberrooms(doc, "level 1");
 
             return Result.Succeeded;
         }

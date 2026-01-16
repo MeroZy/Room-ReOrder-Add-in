@@ -62,6 +62,9 @@ namespace Room_Reorder.Methods
             // find (Ground Level)
             int groundIndex = activeLevels.FindIndex(x => x.Name.Equals(groundLevelName, StringComparison.InvariantCultureIgnoreCase));
 
+            List<Level> upperLevels = new List<Level>();
+            List<Level> lowerLevels = new List<Level>();
+
             if (groundIndex == -1)
             {
                 // handle level name wrong
@@ -82,71 +85,87 @@ namespace Room_Reorder.Methods
 
                 if (groundIndex == -1)
                 {
-                    TaskDialog.Show("Error", "No levels with rooms found above the specified Ground Level");
-                    return;
+                    TaskDialog.Show("Notice", "No levels with rooms found above the specified Ground Level\n\n" +
+                        "Program will continue defining all levels as underground");
+                    lowerLevels = activeLevels
+                        .OrderByDescending(x => x.Elevation)
+                        .ToList();
+                }
+                else
+                {
+                    // Split the list
+                    upperLevels = activeLevels.Skip(groundIndex).ToList();
+                    lowerLevels = activeLevels.Take(groundIndex)
+                        .OrderByDescending(x => x.Elevation)
+                        .ToList();
                 }
             }
-
-            // Split the list
-            List<Level> upperLevels = activeLevels.Skip(groundIndex).ToList();
-            List<Level> lowerLevels = activeLevels.Take(groundIndex)
-                .OrderByDescending(x => x.Elevation)
-                .ToList();
-
-            using (Transaction trans = new Transaction(doc, "Renumber Rooms"))
+            else
             {
-                trans.Start();
-
-                int upperLevelCounter = 1;
-
-                foreach (Level level in upperLevels)
-                {
-                    // get list of rooms from dic
-                    var roomsOnThisLevel = roomsByLevelId[level.Id];
-
-                    // sort rooms
-
-                    var sortedRooms = new List<SpatialElement>();
-
-                    if (!defaultXY) sortedRooms = FlowSortMethod.SortRoomsByFlow(doc, roomsOnThisLevel, RvtData.userStartPoint);
-                    else sortedRooms = SortRoomsByXY(roomsOnThisLevel);
-
-                    int roomCounter = 1;
-                    foreach (SpatialElement room in sortedRooms)
-                    {
-                        // Level + Room (e.g., 205)
-                        string newNumber = $"{upperLevelCounter}{roomCounter.ToString("D2")}";
-                        SetRoomNumber(doc, room, newNumber);
-                        roomCounter++;
-                    }
-                    upperLevelCounter++;
-                }
-
-
-                int lowerLevelCounter = 1; // 1 = Closest to Ground (B1)
-
-                foreach (Level level in lowerLevels)
-                {
-                    var roomsOnThisLevel = roomsByLevelId[level.Id];
-
-                    var sortedRooms = new List<SpatialElement>();
-
-                    if (!defaultXY) sortedRooms = FlowSortMethod.SortRoomsByFlow(doc, roomsOnThisLevel, RvtData.userStartPoint);
-                    else sortedRooms = SortRoomsByXY(roomsOnThisLevel);
-
-                    int roomCounter = 1;
-                    foreach (SpatialElement room in sortedRooms)
-                    {
-                        //P + Level + Room (e.g., P105)
-                        string newNumber = $"P{lowerLevelCounter}{roomCounter.ToString("D2")}";
-                        SetRoomNumber(doc, room, newNumber);
-                        roomCounter++;
-                    }
-                    lowerLevelCounter++;
-                }
-
-                trans.Commit();
+                // Split the list
+                upperLevels = activeLevels.Skip(groundIndex).ToList();
+                lowerLevels = activeLevels.Take(groundIndex)
+                    .OrderByDescending(x => x.Elevation)
+                    .ToList();
             }
+
+
+
+
+                using (Transaction trans = new Transaction(doc, "Renumber Rooms"))
+                {
+                    trans.Start();
+
+                    int upperLevelCounter = 1;
+
+                    foreach (Level level in upperLevels)
+                    {
+                        // get list of rooms from dic
+                        var roomsOnThisLevel = roomsByLevelId[level.Id];
+
+                        // sort rooms
+
+                        var sortedRooms = new List<SpatialElement>();
+
+                        if (!defaultXY) sortedRooms = FlowSortMethod.SortRoomsByFlow(doc, roomsOnThisLevel, RvtData.StartingPoint);
+                        else sortedRooms = SortRoomsByXY(roomsOnThisLevel);
+
+                        int roomCounter = 1;
+                        foreach (SpatialElement room in sortedRooms)
+                        {
+                            // Level + Room (e.g., 205)
+                            string newNumber = $"{upperLevelCounter}{roomCounter.ToString("D2")}";
+                            SetRoomNumber(doc, room, newNumber);
+                            roomCounter++;
+                        }
+                        upperLevelCounter++;
+                    }
+
+
+                    int lowerLevelCounter = 1; // 1 = Closest to Ground (B1)
+
+                    foreach (Level level in lowerLevels)
+                    {
+                        var roomsOnThisLevel = roomsByLevelId[level.Id];
+
+                        var sortedRooms = new List<SpatialElement>();
+
+                        if (!defaultXY) sortedRooms = FlowSortMethod.SortRoomsByFlow(doc, roomsOnThisLevel, RvtData.StartingPoint);
+                        else sortedRooms = SortRoomsByXY(roomsOnThisLevel);
+
+                        int roomCounter = 1;
+                        foreach (SpatialElement room in sortedRooms)
+                        {
+                            //P + Level + Room (e.g., P105)
+                            string newNumber = $"P{lowerLevelCounter}{roomCounter.ToString("D2")}";
+                            SetRoomNumber(doc, room, newNumber);
+                            roomCounter++;
+                        }
+                        lowerLevelCounter++;
+                    }
+
+                    trans.Commit();
+                }
         }
 
 
