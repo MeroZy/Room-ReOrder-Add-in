@@ -7,6 +7,6 @@
 		<Vendor>Amr Khaled</Vendor>
 		<VendorId>AmrKhaled</VendorId>
 		<Description>My custom Revit add-in for Room ReOrder</Description>
-		<FullClassName>Room_Reorder.Revit.ExtApp</FullClassName>
+		<FullClassName>Room_Reorder_Core.ExtApp</FullClassName>
 	</AddIn>
 </RevitAddIns>

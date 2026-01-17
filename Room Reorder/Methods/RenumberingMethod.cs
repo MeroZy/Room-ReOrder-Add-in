@@ -32,7 +32,7 @@ namespace Room_Reorder.Methods
                     string roomNumber = room.Number;
                     string roomLevel = room.Level.Name;
                     sb.AppendLine($"Room: {roomName}, Number: {roomNumber}, Level: {roomLevel}");
-                }     
+                }
             }
             MessageBox.Show(sb.ToString());
         }
@@ -45,7 +45,7 @@ namespace Room_Reorder.Methods
         public static void RenumberRooms(Document doc, string groundLevelName)
         {
             bool defaultXY = false;
- 
+
             List<SpatialElement> allRooms = new FilteredElementCollector(doc)
                                             .OfCategory(BuiltInCategory.OST_Rooms)
                                             .WhereElementIsNotElementType()
@@ -122,60 +122,60 @@ namespace Room_Reorder.Methods
 
 
 
-                using (Transaction trans = new Transaction(doc, "Renumber Rooms"))
+            using (Transaction trans = new Transaction(doc, "Renumber Rooms"))
+            {
+                trans.Start();
+
+                int upperLevelCounter = 1;
+
+                foreach (Level level in upperLevels)
                 {
-                    trans.Start();
+                    // get list of rooms from dic
+                    var roomsOnThisLevel = roomsByLevelId[level.Id];
 
-                    int upperLevelCounter = 1;
+                    // sort rooms
 
-                    foreach (Level level in upperLevels)
+                    var sortedRooms = new List<SpatialElement>();
+
+                    if (!defaultXY) sortedRooms = FlowSortMethod.SortRoomsByFlow(doc, roomsOnThisLevel, RvtData.StartingPoint);
+                    else sortedRooms = SortRoomsByXY(roomsOnThisLevel);
+
+                    int roomCounter = 1;
+                    foreach (SpatialElement room in sortedRooms)
                     {
-                        // get list of rooms from dic
-                        var roomsOnThisLevel = roomsByLevelId[level.Id];
-
-                        // sort rooms
-
-                        var sortedRooms = new List<SpatialElement>();
-
-                        if (!defaultXY) sortedRooms = FlowSortMethod.SortRoomsByFlow(doc, roomsOnThisLevel, RvtData.StartingPoint);
-                        else sortedRooms = SortRoomsByXY(roomsOnThisLevel);
-
-                        int roomCounter = 1;
-                        foreach (SpatialElement room in sortedRooms)
-                        {
-                            // Level + Room (e.g., 205)
-                            string newNumber = $"{upperLevelCounter}{roomCounter.ToString("D2")}";
-                            SetRoomNumber(doc, room, newNumber);
-                            roomCounter++;
-                        }
-                        upperLevelCounter++;
+                        // Level + Room (e.g., 205)
+                        string newNumber = $"{upperLevelCounter}{roomCounter.ToString("D2")}";
+                        SetRoomNumber(doc, room, newNumber);
+                        roomCounter++;
                     }
-
-
-                    int lowerLevelCounter = 1; // 1 = Closest to Ground (B1)
-
-                    foreach (Level level in lowerLevels)
-                    {
-                        var roomsOnThisLevel = roomsByLevelId[level.Id];
-
-                        var sortedRooms = new List<SpatialElement>();
-
-                        if (!defaultXY) sortedRooms = FlowSortMethod.SortRoomsByFlow(doc, roomsOnThisLevel, RvtData.StartingPoint);
-                        else sortedRooms = SortRoomsByXY(roomsOnThisLevel);
-
-                        int roomCounter = 1;
-                        foreach (SpatialElement room in sortedRooms)
-                        {
-                            //P + Level + Room (e.g., P105)
-                            string newNumber = $"P{lowerLevelCounter}{roomCounter.ToString("D2")}";
-                            SetRoomNumber(doc, room, newNumber);
-                            roomCounter++;
-                        }
-                        lowerLevelCounter++;
-                    }
-
-                    trans.Commit();
+                    upperLevelCounter++;
                 }
+
+
+                int lowerLevelCounter = 1; // 1 = Closest to Ground (B1)
+
+                foreach (Level level in lowerLevels)
+                {
+                    var roomsOnThisLevel = roomsByLevelId[level.Id];
+
+                    var sortedRooms = new List<SpatialElement>();
+
+                    if (!defaultXY) sortedRooms = FlowSortMethod.SortRoomsByFlow(doc, roomsOnThisLevel, RvtData.StartingPoint);
+                    else sortedRooms = SortRoomsByXY(roomsOnThisLevel);
+
+                    int roomCounter = 1;
+                    foreach (SpatialElement room in sortedRooms)
+                    {
+                        //P + Level + Room (e.g., P105)
+                        string newNumber = $"P{lowerLevelCounter}{roomCounter.ToString("D2")}";
+                        SetRoomNumber(doc, room, newNumber);
+                        roomCounter++;
+                    }
+                    lowerLevelCounter++;
+                }
+
+                trans.Commit();
+            }
         }
 
         /// <summary>
@@ -201,10 +201,6 @@ namespace Room_Reorder.Methods
         {
             try
             {
-                room.Number = number;
-            }
-            catch
-            {
                 SpatialElement conflictingRoom = new FilteredElementCollector(doc)
                     .OfCategory(BuiltInCategory.OST_Rooms)
                     .WhereElementIsNotElementType()
@@ -218,6 +214,7 @@ namespace Room_Reorder.Methods
                 }
                 room.Number = number;
             }
+            catch { }
         }
     }
 }

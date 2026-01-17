@@ -61,7 +61,7 @@ namespace Room_Reorder.Revit
             PushButton pb = panel.AddItem(pb_Data) as PushButton;
             pb.ToolTip = "This is Room ReOrder Add-in Developed By Amr Khaled";
 
-            Bitmap originalBitmap = Properties.Resources.logoRenumbersq__1_;
+            Bitmap originalBitmap = Properties.Resources.icons8_room_80;
 
             Bitmap resizedLarge = new Bitmap(originalBitmap, new Size(32, 32));
             pb.LargeImage = GetImageSource(resizedLarge);

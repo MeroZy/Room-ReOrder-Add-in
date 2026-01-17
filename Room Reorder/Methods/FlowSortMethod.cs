@@ -54,7 +54,7 @@ namespace Room_Reorder.Methods
             // PRIORITY B: If point is on a wall/door (technically "outside"), find the best nearby room.
             if (startRoom == null)
             {
-                double searchRadius = 15.0; // Search range (in feet)
+                double searchRadius = 15.0; // Search range (feet)
 
                 var nearbyRooms = validRooms
                     .Select(r => new {
