@@ -2,6 +2,7 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
+using Room_Reorder.Methods;
 using Room_Reorder.Revit;
 using Room_Reorder.UI;
 using System;
@@ -11,7 +12,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Room_Reorder.Methods;
 
 namespace Room_Reorder
 {
@@ -35,15 +35,23 @@ namespace Room_Reorder
             uidoc = commandData.Application.ActiveUIDocument;
             doc = uidoc.Document;
 
-            ExtEventHan = new ExtEventHan();
-            ExtEvent = ExternalEvent.Create(ExtEventHan);
+            if (Mainform == null || Mainform.IsDisposed)
+            {
+                ExtEventHan = new ExtEventHan();
+                ExtEvent = ExternalEvent.Create(ExtEventHan);
 
-            //MAIN
-            Mainform = new Room_ReOrder();
-            Mainform.Show();
+                //MAIN
+                Mainform = new Room_ReOrder();
+                Mainform.Show();
+            }
+            else
+            {
+                Mainform.Focus();
+            }
 
             RvtData.StartingPoint = new XYZ(0, 0, 0);
 
+            
             //RVTUtlis.Run();
             //TaskDialog.Show("Test",RVTUtlis.sb.ToString()); //for test
             //GetRoomData(doc);

@@ -5,6 +5,8 @@ VisualStudioVersion = 17.14.36717.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Room Reorder", "Room Reorder\Room Reorder.csproj", "{CAF124A4-0F8E-4738-9059-2E85BF18AECB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyRVT About", "EasyRVT About\EasyRVT About.csproj", "{B98F6965-27D3-432F-A530-7C5050ABB557}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{CAF124A4-0F8E-4738-9059-2E85BF18AECB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CAF124A4-0F8E-4738-9059-2E85BF18AECB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CAF124A4-0F8E-4738-9059-2E85BF18AECB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B98F6965-27D3-432F-A530-7C5050ABB557}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B98F6965-27D3-432F-A530-7C5050ABB557}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B98F6965-27D3-432F-A530-7C5050ABB557}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B98F6965-27D3-432F-A530-7C5050ABB557}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

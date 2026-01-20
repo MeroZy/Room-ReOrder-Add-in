@@ -1,4 +1,5 @@
 ﻿using Autodesk.Revit.UI;
+using Autodesk.Revit.UI.Events;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,7 +14,6 @@ using System.Windows.Media.Imaging;
 
 namespace Room_Reorder.Revit
 {
-
     public class ExtApp : IExternalApplication
     {
         public Result OnShutdown(UIControlledApplication uicApp)
@@ -25,68 +25,61 @@ namespace Room_Reorder.Revit
         {
             return RunApp(uicApp);
         }
-
-        /// <summary>
-        /// run the application to create ribbon tab, panel and button
-        /// </summary>
-        /// <param name="uicApp"></param>
-        /// <returns></returns>
         public static Result RunApp(UIControlledApplication uicApp)
         {
-            string tabName = "KAITECH-BD-R09"; //EasyRVT
-            string panelName = "Architecture";
-
-            try
-            {
-                uicApp.CreateRibbonTab(tabName);
-            }
-            catch (Exception) { }
-
-            RibbonPanel panel = uicApp.GetRibbonPanels(tabName)
-                                        .FirstOrDefault(p => p.Name == panelName);
-
-            if (panel == null)
-            {
-                panel = uicApp.CreateRibbonPanel(tabName, panelName);
-            }
-
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            PushButtonData pb_Data = new PushButtonData(
-                "Rooms ReOrder",
-                "Rooms ReOrder",
-                assembly.Location,
-                "Room_Reorder.ExtCmd" //extcmd full name 
-            );
-
-            PushButton pb = panel.AddItem(pb_Data) as PushButton;
-            pb.ToolTip = "This is Room ReOrder Add-in Developed By Amr Khaled";
-
-            Bitmap originalBitmap = Properties.Resources.icons8_room_80;
-
-            Bitmap resizedLarge = new Bitmap(originalBitmap, new Size(32, 32));
-            pb.LargeImage = GetImageSource(resizedLarge);
-
-            Bitmap resizedSmall = new Bitmap(originalBitmap, new Size(16, 16));
-            pb.Image = GetImageSource(resizedSmall);
+            CreatePluginUI(uicApp);
 
             return Result.Succeeded;
         }
 
         /// <summary>
-        /// convert System.Drawing.Bitmap to ImageSource for Revit button icons
+        /// Tries to create the About button if this version is the final winner
         /// </summary>
-        /// <param name="bitmap"></param>
-        /// <returns></returns>
-        public static ImageSource GetImageSource(System.Drawing.Bitmap bitmap) //gpt help
+        /// <param name="uicApp"></param>
+        private static void CreatePluginUI(UIControlledApplication uicApp)
+        {
+            string tabName = "EasyRVT";
+            string panelName = "Architecture";
+
+            try { uicApp.CreateRibbonTab(tabName); } catch { }
+
+            RibbonPanel panel =
+                uicApp.GetRibbonPanels(tabName)
+                    .FirstOrDefault(p => p.Name == panelName)
+                ?? uicApp.CreateRibbonPanel(tabName, panelName);
+
+            Assembly assembly = Assembly.GetExecutingAssembly();
+
+            PushButtonData pbData = new PushButtonData(
+                "Rooms_ReOrder",
+                "Rooms ReOrder",
+                assembly.Location,
+                "Room_Reorder.ExtCmd"
+            );
+
+            PushButton pb = panel.AddItem(pbData) as PushButton;
+            pb.ToolTip = "This is Room ReOrder Add-in Developed By Amr Khaled";
+
+            Bitmap icon = Properties.Resources.icons8_room_80;
+            pb.LargeImage = GetImageSource(new Bitmap(icon, new Size(32, 32)));
+            pb.Image = GetImageSource(new Bitmap(icon, new Size(16, 16)));
+        }
+
+        // ================= Image Conversion =================
+        public static ImageSource GetImageSource(Bitmap bitmap)
         {
             using (MemoryStream ms = new MemoryStream())
             {
                 bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
                 ms.Position = 0;
-                PngBitmapDecoder decoder = new PngBitmapDecoder(ms, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                return decoder.Frames[0];
+                return new PngBitmapDecoder(
+                    ms,
+                    BitmapCreateOptions.PreservePixelFormat,
+                    BitmapCacheOption.OnLoad
+                ).Frames[0];
             }
         }
     }
-        
+
+
 }

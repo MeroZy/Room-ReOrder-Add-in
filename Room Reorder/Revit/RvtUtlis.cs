@@ -45,6 +45,7 @@ namespace Room_Reorder.Revit
             List<string> levelNames = new FilteredElementCollector(doc)
                                       .OfClass(typeof(Level))
                                       .Cast<Level>()
+                                      .OrderBy(lvl => lvl.Elevation)
                                       .Select(lvl => lvl.Name)
                                       .ToList();
             return levelNames;
