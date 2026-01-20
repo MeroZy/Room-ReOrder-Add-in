@@ -10,7 +10,7 @@ A smart Revit add-in that automatically renumbers rooms based on **real spatial 
 
 **Rooms ReOrder** is designed to generate natural, human-like room numbering sequences by understanding how people actually move through a building.
 
-Instead of relying on X/Y coordinates or bounding boxes, the add-in analyzes **door connectivity**, **room relationships**, and **entrance hierarchy** to produce logical and readable room numbers—ideal for architectural documentation and large-scale projects.
+Instead of relying on X/Y coordinates or bounding boxes, the add-in analyzes **door connectivity**, **room relationships**, and **entrance hierarchy** to produce logical and readable room numbers ideal for architectural documentation and large-scale projects.
 
 ---
 
